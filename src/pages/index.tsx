@@ -1,7 +1,31 @@
+import { GetServerSideProps } from 'next'
+import { getSession, signIn } from 'next-auth/react'
 import Image from 'next/image'
-import { BsLockFill } from 'react-icons/bs'
+import React from 'react'
+import { BsGithub, BsLockFill } from 'react-icons/bs'
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req })
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/app',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
+}
+
+export default function SignIn() {
+  function handleSignIn() {
+    signIn('github')
+  }
+
   return (
     <>
       <div className="flex items-center justify-center min-h-full px-4 py-12 sm:px-6 lg:px-8">
@@ -15,10 +39,15 @@ export default function Home() {
                 height="120px"
               />
             </div>
-            <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">Sign in to your account</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
+              Sign in to your account
+            </h2>
             <p className="mt-2 text-sm text-center text-gray-600">
               Or{' '}
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <a
+                href="#"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
                 start your 14-day free trial
               </a>
             </p>
@@ -64,13 +93,19 @@ export default function Home() {
                   type="checkbox"
                   className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
-                <label htmlFor="remember-me" className="block ml-2 text-sm text-gray-900">
+                <label
+                  htmlFor="remember-me"
+                  className="block ml-2 text-sm text-gray-900"
+                >
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <a
+                  href="#"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   Forgot your password?
                 </a>
               </div>
@@ -82,9 +117,21 @@ export default function Home() {
                 className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <BsLockFill className="w-5 h-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+                  <BsLockFill
+                    className="w-5 h-5 text-indigo-500 group-hover:text-indigo-400"
+                    aria-hidden="true"
+                  />
                 </span>
                 Sign in
+              </button>
+              <button
+                className="flex justify-around w-full mt-8"
+                onClick={handleSignIn}
+              >
+                <BsGithub
+                  size={40}
+                  className="inline-block mx-auto text-blue-800"
+                />
               </button>
             </div>
           </form>
